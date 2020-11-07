@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeTimeKeepingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201107080327_Initial")]
-    partial class Initial
+    [Migration("20201107172605_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -90,12 +90,12 @@ namespace EmployeeTimeKeepingApp.Migrations
                     b.HasData(
                         new
                         {
-                            TransactionTypeId = -1,
+                            TransactionTypeId = 1,
                             TransactionTypName = "IN"
                         },
                         new
                         {
-                            TransactionTypeId = -2,
+                            TransactionTypeId = 2,
                             TransactionTypName = "OUT"
                         });
                 });

@@ -88,12 +88,12 @@ namespace EmployeeTimeKeepingApp.Migrations
                     b.HasData(
                         new
                         {
-                            TransactionTypeId = -1,
+                            TransactionTypeId = 1,
                             TransactionTypName = "IN"
                         },
                         new
                         {
-                            TransactionTypeId = -2,
+                            TransactionTypeId = 2,
                             TransactionTypName = "OUT"
                         });
                 });
