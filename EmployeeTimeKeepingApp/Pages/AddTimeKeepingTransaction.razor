@@ -1,0 +1,88 @@
+﻿@page "/time-keeping-transaction/add"
+@using EmployeeTimeKeepingApp.Services
+@using EmployeeTimeKeepingApp.Entities
+@inject ITimeKeepingTransactionService timeKeepingTransactionService
+@inject ITransactionTypeService transactionTypeService
+@inject IEmployeeService employeeService
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
+<h1>
+    Add Time Keeping Transaction
+</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@timeKeepingTransaction" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label for="Employee">Employee</label>
+                <select id="Employee" class="form-control" @bind="@timeKeepingTransaction.EmployeeId">
+                    <option value=""></option>
+                    @if (employees != null)
+                    {
+                        foreach (var employee in employees)
+                        {
+                            <option value="@employee.EmployeeId">@employee.FirstName @employee.LastName</option>
+                        }
+                    }
+
+
+                </select>
+                <ValidationMessage For="@(() => timeKeepingTransaction.EmployeeId)" />
+            </div>
+            <div class="form-group">
+                <label for="TransactionType">Transaction Type</label>
+                <select id="TransactionType" class="form-control" @bind="@timeKeepingTransaction.TransactionTypeId">
+                    <option value=""></option>
+                    @if (transactionTypes != null)
+                    {
+                        foreach (var transactionType in transactionTypes)
+                        {
+                            <option value="@transactionType.TransactionTypeId">@transactionType.TransactionTypName</option>
+                        }
+                    }
+                    </select>
+                <ValidationMessage For="@(() => timeKeepingTransaction.TransactionTypeId)" />
+            </div>
+            
+            <div class="form-group">
+                <label for="TransactionDateTime" class="control-label">Transaction Date Time</label>
+                <input id="TransactionDateTime" type="datetime-local" class="form-control" @bind:format="yyyy-MM-ddTHH:mm" @bind="@timeKeepingTransaction.TransactionDateTime"/>
+                <ValidationMessage For="@(() => timeKeepingTransaction.TransactionDateTime)" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" @onclick="() => cancel()">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+    TimeKeepingTransaction timeKeepingTransaction = new TimeKeepingTransaction();
+    List<Employee> employees;
+    List<TransactionType> transactionTypes;
+
+    protected async Task CreateTimeKeepingTransaction()
+    {
+        await timeKeepingTransactionService.Create(timeKeepingTransaction);
+        navigationManager.NavigateTo("/time-keeping-transaction");
+    }
+
+    void cancel()
+    {
+        navigationManager.NavigateTo("/time-keeping-transaction");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.timeKeepingTransaction.TransactionDateTime = DateTime.Now;
+        employees = await employeeService.GetAllEmployees();
+        transactionTypes = await transactionTypeService.GetTransactionTypes();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await this.CreateTimeKeepingTransaction();
+    }
+}
