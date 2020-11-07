@@ -1,0 +1,70 @@
+﻿@page "/employee/add"
+@using EmployeeTimeKeepingApp.Services
+@using EmployeeTimeKeepingApp.Entities
+@inject IEmployeeService employeeService
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
+<h1>
+    Add Employee
+</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@employee" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label for="FirstName" class="control-label">First Name</label>
+                <input id="FirstName" class="form-control" @bind-value="@employee.FirstName" />
+                <ValidationMessage For="@(() => employee.FirstName)" />
+            </div>
+            <div class="form-group">
+                <label for="LastName" class="control-label">Last Name</label>
+                <input id="LastName" class="form-control" @bind-value="@employee.LastName" />
+                <ValidationMessage For="@(() => employee.LastName)" />
+            </div>
+            <div class="form-group">
+                <label for="Gender">Gender</label>
+                <select id="Gender" class="form-control" @bind="@employee.Gender">
+                    <option value=""></option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <ValidationMessage For="@(() => employee.Gender)" />
+            </div>
+            <div class="form-group">
+                <label for="DateHired" class="control-label">Date Hired</label>
+                <input id="DateHired" type="date" class="form-control" @bind-value="@employee.DateHired" />
+                <ValidationMessage For="@(() => employee.DateHired)" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" @onclick="() => cancel()">Cancel</button>
+            </div>
+            </EditForm>
+</div>
+</div>
+
+@code {
+
+    Employee employee = new Employee();
+
+    protected async Task CreateEmployee()
+    {
+        await employeeService.Create(employee);
+        navigationManager.NavigateTo("/employee");
+    }
+
+    void cancel()
+    {
+        navigationManager.NavigateTo("/employee");
+    }
+
+    protected override void OnInitialized()
+    {
+        this.employee.DateHired = DateTime.Now;
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await this.CreateEmployee();
+    }
+}
